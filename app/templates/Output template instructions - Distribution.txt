@@ -1,0 +1,20 @@
+- How to read the Distribution result file:
+
+Several spreadsheets were generated (including this one). The "Definitions" spreadsheet is copied from your input template for reference. The spreadsheet titled "Distribution Calculations" produces synthetic scores of definitional correspondence and definitional distinctiveness based on a transformer-based model.
+
+- How to read the "Distribution Calculations" spreadsheet:
+
+1) The content of the "Expected target construct" column is provided by the user using the input file. The "Predicted target construct" columns identifies the construct with the highest predicted correspondence score for a given item. The "Scoring target construct" column indicates which construct is used for the calculations. When an "Expected target construct" is provided in the input file, the algorithm will use this construct for scoring. 
+
+2) When the "Expected target construct" is left blank in the input file, the algorithm uses the predicted target construct for scoring. In the unlikely event an item equally reflects two or more constructs (correspondence scores are identical across two or more constructs), the model will use the construct with the highest correspondence value as scoring construct.
+
+3) Users should be mindful of any discrepancy between the "Expected target construct" column and the "Predicted target construct" column as this could indicate a potential problem with the item and/or the construct definition. Examination of synthetic definitional distinctiveness (s_htd) would reveal the extent of the problem.
+
+4) Column "L" and onwards (construct A_Mean) are average correspondence scores based on the ratings from each synthetic rater, which have been collapsed together under the same group for readability. Construct means are used for calculating synthetic scores for definitional correspondence (s_htc) and definitional distinctiveness (s_htd).The formulas are available by clicking on the relevant cells in Excel. 
+
+5) Calculations for synthetic definitional distinctiveness (s_htd) are obtained by subtracting the average correspondence ratings for the scoring construct to the average correspondence ratings for all the other constructs. This implies that all of the others constructs are considered as orbiting by default. This may default option may not always be appropriate (e.g., when other constructs share a part-whole relationship with the focal construct). Formulas for definitional distinctiveness may need to be updated accordingly.
+
+- Notes
+
+A) For additional details on the results, there are hidden sheets included that provide more information (e.g., sheets for each of the synthetic rater "seeds").
+B) If two or more constructs are equally likely to be the predicted target construct, the first construct abbreviation (alphabetically) will be chosen to break the tie.

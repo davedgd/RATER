@@ -1,0 +1,18 @@
+- How to read the Classifier result file:
+
+Several spreadsheets were generated (including this one). The "Definitions" spreadsheet is copied from your input template for reference. The spreadsheet titled "Classifier Calculations" produces predictions of correspondence for each item-definition pair.
+
+- How to read the "Classifier Calculations" spreadsheet:
+
+1) The content of the "Expected target construct" column is provided by the user using the input file. The "Predicted target construct" columns identifies the construct with the highest probability score for a given item. 
+
+2) Users should be mindful of any discrepancy between the "Expected target construct" column and the "Predicted target construct" column as this could indicate a potential problem with the item and/or the construct definition.
+
+3) The scores available in column "D" and onwards are algorithmic estimates that an item belongs to a construct. It can be read as the extent of confidence the model has in matching an item with a construct. Higher scores indicate greater confidence. Scores of .50 and above can be viewed as indications that the model classifies an item as reflecting a construct. 
+
+4) Potential content validity problems can be found when none of the probabilities exceeds .50 (the model is unable to associate an item with a construct from the set), or when two or more constructs yield a score of > .50 or above (the model is confident that the item belongs to more than one construct). Further examination of the probabilities and their differences is warranted.
+
+- Notes
+
+A) For additional details on the results, there are hidden sheets included that provide more information.
+B) If two or more constructs are equally likely to be the predicted target construct, the first construct abbreviation (alphabetically) will be chosen to break the tie.
