@@ -1,8 +1,8 @@
 # RATER
 
-This repository contains the modeling and app code for the paper *"Leveraging Artificial Intelligence in Content Validity Assessment: Development, Illustration, and Evaluation of Two Classes of AI Models"*:
+This repository contains the modeling and app code for the following paper:
 
-Pillet, J. C., Larsen, K., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, K., Sharma, R. (2025). AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System. MIS Quarterly, Forthcoming. https://doi.org/10.25300/MISQ/2025/18946
+Pillet, J. C., Larsen, K., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, K., Sharma, R. (2025). AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System. *MIS Quarterly*, Forthcoming. https://doi.org/10.25300/MISQ/2025/18946
 
 ---
 ### App
