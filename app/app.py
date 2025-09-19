@@ -6,7 +6,7 @@ chosen_llm_full = 'ft:gpt-4o-2024-08-06:dobolyilab:ht:A3rU60He'
 chosen_llm_budget = 'ft:gpt-4o-mini-2024-07-18:dobolyilab:ht:A3rD3mRe'
 
 chosen_classifier = 'microsoft/deberta-v3-large (fine-tuned)'
-model_path = 'microsoft_deberta-v3-large' # folder should be added to the app's main directory
+model_path = 'use_remote' # folder should be added to the app's main directory (e.g., 'microsoft_deberta-v3-large'; for remote, this should be 'use_remote')
 
 ###
 
@@ -14,6 +14,16 @@ import streamlit as st
 import streamlit_ext as ste
 
 from process import *
+
+SMTP_HOST     = st.secrets['smtp']['host']
+SMTP_PORT     = int(st.secrets['smtp'].get('port', 587))
+SMTP_USER     = st.secrets['smtp']['user']
+SMTP_PASS     = st.secrets['smtp']['password']
+
+EMAIL_SUPPORT = st.secrets['email']['support']
+EMAIL_FROM    = SMTP_USER
+EMAIL_TO      = st.secrets['email']['to']
+EMAIL_CC      = st.secrets['email']['cc']
 
 st.set_page_config(
     page_title = 'Content Validity Tool',
@@ -28,7 +38,7 @@ st.markdown('''<style>
             </style>''', 
             unsafe_allow_html = True)
 
-version_number = 'Beta'
+version_number = '1.0.0'
 
 @st.cache_resource
 def st_load_model (model_path):
@@ -84,7 +94,10 @@ with st.sidebar:
             openai_api_key_demo = st.text_input('OpenAI API Key', 
                                                 openai_api_key_demo, 
                                                 help = 'For instructions on how to acquire a key, visit: https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key', 
-                                                disabled = True)
+                                                disabled = False)
+            
+            if openai_api_key_demo != 'sk-proj-...':
+                client = OpenAI(api_key = openai_api_key_demo, max_retries = 10)
 
             if 'disabled' not in st.session_state:
                 st.session_state.disabled = False
@@ -111,7 +124,7 @@ with st.sidebar:
         st.write('**Model Details:** ' + chosen_model)
 
     with st.expander('**Version Details**', expanded = False):
-        st.write('**{version_number} Version:** Subject to Change'.format(version_number = version_number))
+        st.write('**{version_number} :** Subject to Change'.format(version_number = version_number))
 
 with st.container(border = True):
     st.header(
@@ -160,37 +173,88 @@ unsafe_allow_html = True)
                      divider = 'rainbow', 
                      anchor = False)
         
-        model, pipe = st_load_model(model_path)
+        if model_path != 'use_remote':
+            model, pipe = st_load_model(model_path)
+        else:
+            pipe = None
 
         with st.spinner('Processing...'):
             classifier_out, classifier_raw, seed_dfs = None, None, None
 
-            try:
-                template = organize_template(uploaded_file)
+            if selected_model.startswith('**RATERD') and openai_api_key_demo == 'sk-proj-...':
+                st.warning('**:red[Error:] you must enter a valid (and funded) OpenAI API key in the sidebar to use a RATERD model. For instructions on acquiring a key, please see: https://help.openai.com/en/articles/4936850-where-do-i-find-my-openai-api-key**', icon = '⚠️')
+            else:
 
-                if selected_model.startswith('**RATERC'):
-                    cls_seeds_bar = st.progress(0, text = None)
-                    classifier_out, template = run_classifier(template, pipe, dist_and_rep_enabled)
-                    cls_seeds_bar.progress(100, text = None)
-                elif selected_model.startswith('**RATERD'):
-                    llm_seeds_bar = st.progress(0, text = None)
+                try:
 
-                    seed_nums = list(range(123, 123 + num_seeds))
-                    seed_dfs = []
-                    for i, each_seed in enumerate(seed_nums):
-                        llm_seeds_bar.progress((i + 1) / len(seed_nums), text = None)
-                        seed_dfs.append(run_llm(template, seed_num = each_seed, chosen_llm = chosen_llm))
+                    template = organize_template(uploaded_file)
 
-                print([alt_color_enabled])
-                buffer = process_results(classifier_out, template, seed_dfs, chosen_model, readability_enabled, dist_and_rep_enabled, alt_color_enabled, alt_color_upper, alt_color_lower, 'buffer')
+                    if selected_model.startswith('**RATERC'):
+                        cls_seeds_bar = st.progress(0, text = None)
+                        classifier_out, template = run_classifier(template, pipe, dist_and_rep_enabled)
+                        cls_seeds_bar.progress(100, text = None)
+                    elif selected_model.startswith('**RATERD'):
+                        llm_seeds_bar = st.progress(0, text = None)
 
-                download3 = ste.download_button(
-                    label = "Download Results",
-                    data = buffer,
-                    file_name = 'result.xlsx',
-                    mime = 'application/vnd.ms-excel',
-                    custom_css = 'background-color: rgb(34,139,34) !important; color: rgb(255,255,255) !important;'
-                    )
+                        seed_nums = list(range(123, 123 + num_seeds))
+                        seed_dfs = []
+                        for i, each_seed in enumerate(seed_nums):
+                            llm_seeds_bar.progress((i + 1) / len(seed_nums), text = None)
+                            seed_dfs.append(run_llm(template, seed_num = each_seed, chosen_llm = chosen_llm, client_pass = client))
 
-            except:
-                st.warning('**:red[Error:] results could not be generated! Please check your template for issues (or email david.dobolyi@colorado.edu for support).**', icon = '⚠️')
+                    print([alt_color_enabled])
+                    buffer = process_results(classifier_out, template, seed_dfs, chosen_model, readability_enabled, dist_and_rep_enabled, alt_color_enabled, alt_color_upper, alt_color_lower, 'buffer')
+
+                    download3 = ste.download_button(
+                        label = "Download Results",
+                        data = buffer,
+                        file_name = 'result.xlsx',
+                        mime = 'application/vnd.ms-excel',
+                        custom_css = 'background-color: rgb(34,139,34) !important; color: rgb(255,255,255) !important;'
+                        )
+
+                except:
+                    st.warning('**:red[Error:] results could not be generated! Please check your template for issues (or email ' + EMAIL_SUPPORT + ' for support).**', icon = '⚠️')
+
+with st.container(border = True):
+    with st.expander('**Citation**', expanded = True):
+        st.markdown('Pillet, J. C., Larsen, K., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, K., Sharma, R. (2025). [AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System](https://misq.umn.edu/misq/article/doi/10.25300/MISQ/2025/18946/3270/AI-Augmented-Content-Validation-in-Behavioral). *MIS Quarterly*, Forthcoming. https://doi.org/10.25300/MISQ/2025/18946',
+unsafe_allow_html = False)
+
+    import smtplib, ssl
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+        
+    with st.expander('**Feedback & Comments**', expanded = False):
+        st.markdown('Please provide any feedback or comments regarding the tool below:',
+unsafe_allow_html = False)
+
+        user_email = st.text_input('Your Email (Optional)')
+        feedback = st.text_area('Your Message')
+
+        if st.button('Submit', type = 'secondary'):
+            if feedback.strip():
+                try:
+                    msg = MIMEMultipart()
+                    msg['From'] = EMAIL_FROM
+                    msg['To'] = EMAIL_TO
+                    msg['Cc'] = EMAIL_CC
+                    msg['Subject'] = 'Feedback about contval.org'
+                    
+                    body = f"Feedback from: {user_email or 'Anonymous'}\n\n{feedback}"
+                    msg.attach(MIMEText(body, 'plain'))
+
+                    context = ssl.create_default_context()
+                    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout = 15) as server:
+                        server.ehlo()
+                        server.starttls(context = context)
+                        server.ehlo()
+                        server.login(SMTP_USER, SMTP_PASS)
+                        server.sendmail(msg['From'], [msg['To']], msg.as_string())
+
+                    st.success('✅ Thank you for your feedback! It has been sent.')
+
+                except Exception as e:
+                    st.error('❌ Could not send email: {e}')
+            else:
+                st.warning('Please enter some feedback before submitting.')

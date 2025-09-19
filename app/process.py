@@ -1,8 +1,8 @@
 ### Config
 
-set_batch_size = 128
+set_batch_size = 16
 
-openai_api_key = '...' # add valid key
+openai_api_key = '...' # add valid key (unless setting key within GUI [via _demo])
 openai_api_key_demo = 'sk-proj-...'
 
 set_max_workers = 100
@@ -10,13 +10,17 @@ set_temperature = 1
 
 readability_threshold = 25
 
+import streamlit as st
+remote_pipe_api = st.secrets['llmserver']['addr']
+
 ###
 
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 from openai import OpenAI
-client = OpenAI(api_key = openai_api_key, max_retries = 10)
+if openai_api_key != '...':
+    client = OpenAI(api_key = openai_api_key, max_retries = 10)
 
 from prompts import *
 
@@ -30,6 +34,7 @@ import textstat
 
 import json
 import io
+import requests
 
 import warnings
 warnings.filterwarnings('ignore', message = 'The sentencepiece tokenizer that you are converting to a fast tokenizer')
@@ -541,7 +546,9 @@ def run_inference (each_prompt, each_seed, chosen_llm):
         print('Prompt processing error...')
     return(res)
 
-def run_llm (file, seed_num, chosen_llm):
+def run_llm (file, seed_num, chosen_llm, client_pass):
+    global client
+    client = client_pass
     prompts = []
 
     for index, row in file.iterrows():
@@ -601,10 +608,13 @@ def run_classifier (template, pipe = None, dist_and_rep_enabled = False):
                               'text_pair': template['Item statement'][i]})
 
     if pipe is None:
-        model, pipe = load_model(model_path)
+        if remote_pipe_api is None:
+            model, pipe = load_model(model_path)
+            raw_probs = pipe(template_dict, batch_size = set_batch_size)
+        else:
+            res = requests.post(remote_pipe_api, json = template_dict)
+            raw_probs = res.json()['raw_probs']
 
-    raw_probs = pipe(template_dict, batch_size = 16)
-    
     probs = np.array([item[['LABEL_1' == i['label'] for i in item].index(True)]['score'] for item in raw_probs])
 
     template['Classifier Probabilities'] = probs
