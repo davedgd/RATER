@@ -213,8 +213,10 @@ unsafe_allow_html = True)
                         custom_css = 'background-color: rgb(34,139,34) !important; color: rgb(255,255,255) !important;'
                         )
 
-                except:
-                    st.warning('**:red[Error:] results could not be generated! Please check your template for issues (or email ' + EMAIL_SUPPORT + ' for support).**', icon = '⚠️')
+                except Exception as e:
+                    msg = str(e)
+                    st.warning('**:red[Error:] Results could not be generated (see details below)! Please check your template for issues (or email ' + EMAIL_SUPPORT + ' for support).**', icon = '⚠️')
+                    st.warning('**:red[Error Details:]** ' + msg, icon = '⚠️')
 
 with st.container(border = True):
     with st.expander('**Citation**', expanded = True):
