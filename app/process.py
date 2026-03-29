@@ -614,6 +614,8 @@ def run_classifier (template, pipe = None, dist_and_rep_enabled = False):
         else:
             res = requests.post(remote_pipe_api, json = template_dict)
             raw_probs = res.json()['raw_probs']
+    else:
+        raw_probs = pipe(template_dict, batch_size = set_batch_size)
 
     probs = np.array([item[['LABEL_1' == i['label'] for i in item].index(True)]['score'] for item in raw_probs])
 
