@@ -109,8 +109,8 @@ with st.sidebar:
                                     disabled = st.session_state.disabled, 
                                     help = "The number of synthetic raters will determine the quality of the RATERD model's results, but a higher number of runs will incur higher costs (e.g., OpenAI API fees and/or time spent waiting for results). Setting this value to at least 10 is recommended.")
 
-            llm_test_mode = st.checkbox('Test Mode',
-                                        help = 'This feature is work-in-progress. Please only enable it if you know what you need it for.')
+            llm_test_mode = st.checkbox('Use GPT-4o Model',
+                                        help = 'Check this box to use the larger GPT-4o model rather than the smaller GPT-4o mini model.')
             
             if llm_test_mode:
                 chosen_llm = chosen_llm_full
@@ -220,8 +220,7 @@ unsafe_allow_html = True)
 
 with st.container(border = True):
     with st.expander('**Citation**', expanded = True):
-        st.markdown('Pillet, J. C., Larsen, K., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, K., Sharma, R. (2025). [AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System](https://misq.umn.edu/misq/article/doi/10.25300/MISQ/2025/18946/3270/AI-Augmented-Content-Validation-in-Behavioral). *MIS Quarterly*, Forthcoming. https://doi.org/10.25300/MISQ/2025/18946',
-unsafe_allow_html = False)
+        st.markdown('Pillet, J. C., Larsen, K. R., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, J. K., & Sharma, R. (2026). [AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System](https://doi.org/10.25300/MISQ/2025/18946). *MIS Quarterly*, *50*(1), 59-86. https://doi.org/10.25300/MISQ/2025/18946', unsafe_allow_html = False)
 
     import smtplib, ssl
     from email.mime.text import MIMEText
