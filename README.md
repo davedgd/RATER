@@ -2,7 +2,7 @@
 
 This repository contains the modeling and app code for the following paper:
 
-Pillet, J. C., Larsen, K. R., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, J. K., & Sharma, R. (2026). [AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System](https://doi.org/10.25300/MISQ/2025/18946). *MIS Quarterly*, *50*(1): 59-86. https://doi.org/10.25300/MISQ/2025/18946
+Pillet, J. C., Larsen, K. R., Dobolyi, D., Queiroz, M., Handler, A., Arnulf, J. K., & Sharma, R. (2026). [AI-Augmented Content Validation in Behavioral Research: Development and Evaluation of the RATER System](https://doi.org/10.25300/MISQ/2025/18946). *MIS Quarterly*, *50*(1), 59-86. https://doi.org/10.25300/MISQ/2025/18946
 
 ---
 ### App
