@@ -35,7 +35,7 @@ st.markdown('''<style>
             #content-validity-tool {text-align: center; padding-top: 0px;} 
             .stProgress > div > div > div > div {background-color: #1f83e1;}
             a {text-decoration: none !important;}
-            a:hover {text-decoration: underline !important;}
+            a:hover {opacity: 0.9 !important;}
             </style>''', 
             unsafe_allow_html = True)
 
