@@ -32,8 +32,10 @@ st.set_page_config(
 
 st.markdown('''<style>
             .steDownloadButton:hover {border-color: rgb(255,255,255) !important; background-image: linear-gradient(rgb(0 0 0/20%) 0 0) !important;} 
-            #content-validity-tool {text-align: center; padding-top: 0px;}
-            a {text-decoration: none;}
+            #content-validity-tool {text-align: center; padding-top: 0px;} 
+            .stProgress > div > div > div > div {background-color: #1f83e1;}
+            a {text-decoration: none !important;}
+            a:hover {text-decoration: underline !important;}
             </style>''', 
             unsafe_allow_html = True)
 
