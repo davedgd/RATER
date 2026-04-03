@@ -12,6 +12,7 @@ model_path = 'use_remote' # folder should be added to the app's main directory (
 
 import streamlit as st
 import streamlit_ext as ste
+import streamlit_analytics2 as streamlit_analytics
 
 from process import *
 
@@ -24,6 +25,8 @@ EMAIL_SUPPORT = st.secrets['email']['support']
 EMAIL_FROM    = SMTP_USER
 EMAIL_TO      = st.secrets['email']['to']
 EMAIL_CC      = st.secrets['email']['cc']
+
+ANALYTICS     = st.secrets['analytics']['password']
 
 st.set_page_config(
     page_title = 'Content Validity Tool',
@@ -165,10 +168,11 @@ unsafe_allow_html = True)
 
         st.markdown('Upload your prepared instrument here. As soon as the instrument is uploaded, the analysis will start.')
 
-        uploaded_file = st.file_uploader(label = 'Upload Instrument', 
-                                        key = 'uploaded_file', 
-                                        label_visibility = 'collapsed', 
-                                        on_change = flip_disabled_state)
+        with streamlit_analytics.track(unsafe_password = ANALYTICS):
+            uploaded_file = st.file_uploader(label = 'Upload Instrument', 
+                                            key = 'uploaded_file', 
+                                            label_visibility = 'collapsed', 
+                                            on_change = flip_disabled_state)
     if uploaded_file is not None:
         st.subheader('Results', 
                      divider = 'rainbow', 
