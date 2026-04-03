@@ -1,4 +1,5 @@
 .DS_Store
 RATER-C/bak
 RATER-D/bak
-app/.streamlit
+app/.streamlit/config.toml
+app/.streamlit/secrets.toml

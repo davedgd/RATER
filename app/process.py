@@ -354,7 +354,7 @@ def process_results (classifier_out, classifier_raw, seed_dfs, chosen_model, rea
 
                 for j in range(RI_idx + 1, RI_idx + len(definitions['Abbreviation']) + 1):
 
-                    print(j)
+                    #print(j)
 
                     for i in range(0, max_row):
                         if classifier_out.iloc[i, j] >= alt_color_upper and classifier_out['Expected target construct'][i] == classifier_out.columns[j]:
@@ -372,7 +372,7 @@ def process_results (classifier_out, classifier_raw, seed_dfs, chosen_model, rea
                         if apply:
                             worksheet.conditional_format(i + 1, j, i + 1, j, {'type': 'no_blanks', 'format': apply_format})
 
-                        print(i)
+                        #print(i)
 
                     matched_cells = np.where((classifier_out['Expected target construct'] != '(blank)') & (classifier_out['Expected target construct'] == classifier_out.columns[j]))
                     if len(matched_cells[0]) >= 2:
